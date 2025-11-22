@@ -1,10 +1,9 @@
-// pages/TechnologyDetail.js
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import GitHubStats from '../components/GitHubStats';
 
 function TechnologyDetail() {
   const { techId } = useParams();
-  const navigate = useNavigate();
   const [technology, setTechnology] = useState(null);
 
   useEffect(() => {
@@ -77,6 +76,11 @@ function TechnologyDetail() {
               Завершено
             </button>
           </div>
+        </div>
+
+        <div className="detail-section">
+          <h3> GitHub Статистика</h3>
+          <GitHubStats techName={technology.title} />
         </div>
 
         {technology.notes && (
