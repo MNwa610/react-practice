@@ -73,10 +73,10 @@ function Home() {
           <Link to="/technologies" className="btn btn-primary btn-large">
              Посмотреть все технологии
           </Link>
-          <Link to="/add-technology" className="btn btn-secondary btn-large">
+          <Link to="/add-technology" className="btn btn-fourght btn-large">
              Добавить новую технологию
           </Link>
-          <Link to="/statistics" className="btn btn-secondary btn-large">
+          <Link to="/statistics" className="btn btn-fourght btn-large">
              Посмотреть статистику
           </Link>
         </div>

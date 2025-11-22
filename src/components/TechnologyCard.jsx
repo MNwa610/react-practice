@@ -12,11 +12,11 @@ function TechnologyCard({ technology }) {
 
   const getStatusIcon = (status) => {
     const iconMap = {
-      'not-started': '⭕',
-      'in-progress': '🟡',
-      'completed': '✅'
+      'not-started': '',
+      'in-progress': '',
+      'completed': ''
     };
-    return iconMap[status] || '📝';
+    return iconMap[status] || '';
   };
 
   const formatDate = (dateString) => {
@@ -44,24 +44,12 @@ function TechnologyCard({ technology }) {
             : technology.description
           }
         </p>
-
-        {technology.notes && (
-          <div className="tech-notes-preview">
-            <span className="notes-label">Заметки:</span>
-            <p className="notes-text">
-              {technology.notes.length > 100
-                ? `${technology.notes.substring(0, 100)}...`
-                : technology.notes
-              }
-            </p>
-          </div>
-        )}
       </div>
 
       <div className="tech-card-footer">
         <div className="tech-meta">
           <span className="tech-date">
-            📅 {technology.createdAt ? formatDate(technology.createdAt) : 'Дата не указана'}
+             {technology.createdAt ? formatDate(technology.createdAt) : 'Дата не указана'}
           </span>
         </div>
         

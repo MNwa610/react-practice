@@ -54,6 +54,63 @@ function Settings() {
     }
   };
 
+  const addTestData = () => {
+    const testTechnologies = [
+      {
+        id: 1,
+        title: "React",
+        description: "JavaScript библиотека для создания пользовательских интерфейсов",
+        status: "in-progress",
+        notes: "Изучаю хуки и контекст. Очень нравится компонентный подход!",
+        createdAt: new Date('2024-01-15').toISOString()
+      },
+      {
+        id: 2,
+        title: "TypeScript",
+        description: "Статически типизированное надмножество JavaScript",
+        status: "completed",
+        notes: "Отличная система типов, помогает избегать ошибок. Generics - мощный инструмент!",
+        createdAt: new Date('2024-02-01').toISOString()
+      },
+      {
+        id: 3,
+        title: "Node.js",
+        description: "Среда выполнения JavaScript на стороне сервера",
+        status: "not-started",
+        notes: "Планирую изучить для бэкенд-разработки и создания REST API",
+        createdAt: new Date('2024-02-10').toISOString()
+      },
+      {
+        id: 4,
+        title: "MongoDB",
+        description: "Документоориентированная NoSQL база данных",
+        status: "in-progress",
+        notes: "Разбираюсь с агрегациями и индексами. Гибкая схема данных - это удобно!",
+        createdAt: new Date('2024-02-20').toISOString()
+      },
+      {
+        id: 5,
+        title: "Docker",
+        description: "Платформа для контейнеризации приложений",
+        status: "not-started",
+        notes: "Хочу научиться контейнеризировать приложения для упрощения деплоя",
+        createdAt: new Date('2024-03-01').toISOString()
+      },
+      {
+        id: 6,
+        title: "GraphQL",
+        description: "Язык запросов для API и среда выполнения",
+        status: "completed",
+        notes: "Понравилась возможность запрашивать только нужные данные. Отличная альтернатива REST!",
+        createdAt: new Date('2024-01-20').toISOString()
+      }
+    ];
+
+    localStorage.setItem('technologies', JSON.stringify(testTechnologies));
+    alert('Тестовые данные добавлены!');
+    window.location.reload();
+  };
+
   return (
     <div className="page">
       <div className="page-header">
@@ -117,6 +174,15 @@ function Settings() {
         <div className="settings-section">
           <h3>Управление данными</h3>
           
+          <div className="setting-item">
+            <button onClick={addTestData} className="btn btn-third">
+              Добавить тестовые данные
+            </button>
+            <p className="setting-description">
+              Заполнить приложение демонстрационными технологиями для тестирования
+            </p>
+          </div>
+
           <div className="setting-item">
             <button onClick={exportData} className="btn btn-primary">
               Экспорт данных
