@@ -1,12 +1,16 @@
 import { useState } from 'react';
+import { useNotification } from '../components/NotificationProvider';
+import ThemeToggle from '../components/ThemeToggle';
 
-function Settings() {
+function Settings({ isDarkMode, onToggleTheme }) {
   const [settings, setSettings] = useState({
     theme: 'light',
     language: 'ru',
     notifications: true,
     autoSave: true
   });
+
+  const { showNotification } = useNotification();
 
   const handleSettingChange = (key, value) => {
     const newSettings = {
@@ -26,6 +30,7 @@ function Settings() {
     link.href = URL.createObjectURL(dataBlob);
     link.download = 'technologies-backup.json';
     link.click();
+    showNotification('Данные успешно экспортированы', 'success');
   };
 
   const importData = (event) => {
@@ -36,10 +41,10 @@ function Settings() {
         try {
           const data = JSON.parse(e.target.result);
           localStorage.setItem('technologies', JSON.stringify(data));
-          alert('Данные успешно импортированы!');
+          showNotification('Данные успешно импортированы', 'success');
           window.location.reload();
         } catch (error) {
-          alert('Ошибка при импорте данных: неверный формат файла');
+          showNotification('Ошибка при импорте данных: неверный формат файла', 'error');
         }
       };
       reader.readAsText(file);
@@ -49,7 +54,7 @@ function Settings() {
   const clearAllData = () => {
     if (window.confirm('Вы уверены, что хотите удалить все данные? Это действие нельзя отменить.')) {
       localStorage.removeItem('technologies');
-      alert('Все данные удалены');
+      showNotification('Все данные удалены', 'warning');
       window.location.reload();
     }
   };
@@ -107,8 +112,12 @@ function Settings() {
     ];
 
     localStorage.setItem('technologies', JSON.stringify(testTechnologies));
-    alert('Тестовые данные добавлены!');
+    showNotification('Тестовые данные добавлены', 'success');
     window.location.reload();
+  };
+
+  const handleSave = () => {
+    showNotification('Настройки сохранены', 'success');
   };
 
   return (
@@ -123,14 +132,12 @@ function Settings() {
           
           <div className="setting-item">
             <label>Тема оформления:</label>
-            <select 
-              value={settings.theme}
-              onChange={(e) => handleSettingChange('theme', e.target.value)}
-            >
-              <option value="light">Светлая</option>
-              <option value="dark">Темная</option>
-              <option value="auto">Системная</option>
-            </select>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px' }}>
+              <span>Светлая</span>
+              <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
+              <span>Тёмная</span>
+            </div>
+            <p>Переключение между светлой и тёмной темой оформления</p>
           </div>
 
           <div className="setting-item">
@@ -216,6 +223,12 @@ function Settings() {
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="form-actions">
+        <button className="btn btn-primary" onClick={handleSave}>
+          Сохранить настройки
+        </button>
       </div>
     </div>
   );

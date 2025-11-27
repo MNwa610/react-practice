@@ -25,7 +25,6 @@ function Home() {
       <h1>Добро пожаловать в Трекер технологий!</h1>
       <p className="home-subtitle">Отслеживайте прогресс изучения технологий в одном удобном месте.</p>
       
-      {/* Быстрая статистика */}
       <div className="home-stats">
         <div className="stat-item">
           <div className="stat-number">{stats.total}</div>
@@ -45,22 +44,18 @@ function Home() {
         <h2>Возможности приложения:</h2>
         <div className="features-grid">
           <div className="feature-card">
-            
             <h3>Добавление технологий</h3>
             <p>Создавайте список технологий, которые хотите изучить</p>
           </div>
           <div className="feature-card">
-            
             <h3>Отслеживание прогресса</h3>
             <p>Отмечайте статус изучения: не начато, в процессе, завершено</p>
           </div>
           <div className="feature-card">
-            
             <h3>Визуализация статистики</h3>
             <p>Наглядные графики и диаграммы вашего прогресса</p>
           </div>
           <div className="feature-card">
-            
             <h3>Сохранение данных</h3>
             <p>Все данные хранятся локально в вашем браузере</p>
           </div>
@@ -71,13 +66,13 @@ function Home() {
         <h3>Быстрый старт:</h3>
         <div className="action-buttons">
           <Link to="/technologies" className="btn btn-primary btn-large">
-             Посмотреть все технологии
+            Посмотреть все технологии
           </Link>
           <Link to="/add-technology" className="btn btn-fourght btn-large">
-             Добавить новую технологию
+            Добавить новую технологию
           </Link>
           <Link to="/statistics" className="btn btn-fourght btn-large">
-             Посмотреть статистику
+            Посмотреть статистику
           </Link>
         </div>
       </div>
