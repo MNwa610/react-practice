@@ -2,11 +2,13 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect, useMemo } from 'react';
 import TechnologyCard from '../components/TechnologyCard';
 import SearchBar from '../components/SearchBar';
+import BulkStatusEditor from '../components/BulkStatusEditor';
 
 function TechnologyList() {
   const [technologies, setTechnologies] = useState([]);
   const [filter, setFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showBulkEditor, setShowBulkEditor] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('technologies');
@@ -16,9 +18,8 @@ function TechnologyList() {
   }, []);
 
   const searchTechnologies = (query) => {
-    setSearchQuery(query.toLowerCase().trim());
+    setSearchQuery(query);
   };
-
 
   const filteredTechnologies = useMemo(() => {
     let result = technologies;
@@ -28,15 +29,35 @@ function TechnologyList() {
     }
 
     if (searchQuery) {
+      const query = searchQuery.toLowerCase();
       result = result.filter(tech => 
-        tech.title.toLowerCase().includes(searchQuery) ||
-        tech.description.toLowerCase().includes(searchQuery) ||
-        (tech.notes && tech.notes.toLowerCase().includes(searchQuery))
+        tech.title.toLowerCase().includes(query) ||
+        tech.description.toLowerCase().includes(query) ||
+        (tech.notes && tech.notes.toLowerCase().includes(query))
       );
     }
 
     return result;
   }, [technologies, filter, searchQuery]);
+
+  const handleBulkStatusUpdate = (updates) => {
+    const updatedTechnologies = technologies.map(tech => {
+      const update = updates.find(u => u.id === tech.id);
+      if (update) {
+        return {
+          ...tech,
+          status: update.status,
+          updatedAt: update.updatedAt
+        };
+      }
+      return tech;
+    });
+
+    setTechnologies(updatedTechnologies);
+    localStorage.setItem('technologies', JSON.stringify(updatedTechnologies));
+    setShowBulkEditor(false);
+    alert(`Статусы ${updates.length} технологий успешно обновлены!`);
+  };
 
   const getStatusCount = (status) => {
     return technologies.filter(tech => tech.status === status).length;
@@ -45,13 +66,33 @@ function TechnologyList() {
   const searchResultsCount = filteredTechnologies.length;
   const totalCount = technologies.length;
 
+  if (showBulkEditor) {
+    return (
+      <div className="page">
+        <BulkStatusEditor
+          technologies={technologies}
+          onSave={handleBulkStatusUpdate}
+          onCancel={() => setShowBulkEditor(false)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="page">
       <div className="page-header">
         <h1>Все технологии</h1>
-        <Link to="/add-technology" className="btn btn-primary">
-          + Добавить технологию
-        </Link>
+        <div className="header-actions">
+          <button 
+            onClick={() => setShowBulkEditor(true)}
+            className="btn btn-secondary"
+          >
+            Массовое редактирование
+          </button>
+          <Link to="/add-technology" className="btn btn-primary">
+            Добавить технологию
+          </Link>
+        </div>
       </div>
 
       <div className="search-section">
@@ -84,25 +125,21 @@ function TechnologyList() {
           onClick={() => setFilter('completed')} 
           className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
         >
-           Завершено ({getStatusCount('completed')})
+          Завершено ({getStatusCount('completed')})
         </button>
       </div>
 
       {(searchQuery || filter !== 'all') && (
         <div className="results-info">
           <p>
-            Найдено технологий: <strong>{searchResultsCount}</strong>
-            {searchQuery && (
-              <span> по запросу "<strong>{searchQuery}</strong>"</span>
-            )}
-            {filter !== 'all' && (
-              <span> со статусом "<strong>
-                {filter === 'not-started' ? 'Не начато' : 
-                 filter === 'in-progress' ? 'В процессе' : 'Завершено'}
-              </strong>"</span>
-            )}
+            Найдено: <strong>{searchResultsCount}</strong>
+            {searchQuery && ` по запросу "${searchQuery}"`}
+            {filter !== 'all' && ` со статусом "${
+              filter === 'not-started' ? 'Не начато' : 
+              filter === 'in-progress' ? 'В процессе' : 'Завершено'
+            }"`}
           </p>
-          {(searchQuery || filter !== 'all') && searchResultsCount > 0 && (
+          {(searchQuery || filter !== 'all') && (
             <button 
               onClick={() => {
                 setFilter('all');
@@ -110,7 +147,7 @@ function TechnologyList() {
               }}
               className="btn btn-outline btn-sm"
             >
-              Сбросить фильтры
+              Сбросить
             </button>
           )}
         </div>
@@ -125,13 +162,9 @@ function TechnologyList() {
       {technologies.length === 0 && (
         <div className="empty-state">
           <p>Технологий пока нет.</p>
-          <p>Добавьте первую технологию или загрузите тестовые данные в настройках.</p>
           <div className="action-buttons">
             <Link to="/add-technology" className="btn btn-primary">
               Добавить первую технологию
-            </Link>
-            <Link to="/settings" className="btn btn-secondary">
-              Загрузить тестовые данные
             </Link>
           </div>
         </div>
@@ -139,8 +172,7 @@ function TechnologyList() {
 
       {technologies.length > 0 && filteredTechnologies.length === 0 && (
         <div className="empty-state">
-          <p>Технологии не найдены.</p>
-          <p>Попробуйте изменить параметры поиска или сбросить фильтры.</p>
+          <p>Ничего не найдено.</p>
           <button 
             onClick={() => {
               setFilter('all');
