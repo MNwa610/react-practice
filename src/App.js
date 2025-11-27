@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { useState, useMemo, useEffect } from 'react';
 import { lightTheme, darkTheme } from './styles/theme';
@@ -14,12 +14,15 @@ import './App.css';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
-
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      setIsDarkMode(true);
+    const shouldBeDark = savedTheme === 'dark';
+    setIsDarkMode(shouldBeDark);
+
+    if (shouldBeDark) {
       document.body.classList.add('dark-theme');
+    } else {
+      document.body.classList.remove('dark-theme');
     }
   }, []);
 
@@ -31,26 +34,14 @@ function App() {
   const toggleTheme = () => {
     const newDarkMode = !isDarkMode;
     setIsDarkMode(newDarkMode);
-
     localStorage.setItem('theme', newDarkMode ? 'dark' : 'light');
-
+    
     if (newDarkMode) {
       document.body.classList.add('dark-theme');
     } else {
       document.body.classList.remove('dark-theme');
     }
   };
-
-  useEffect(() => {
-    const appElement = document.querySelector('.app');
-    if (appElement) {
-      if (isDarkMode) {
-        appElement.classList.add('dark-theme');
-      } else {
-        appElement.classList.remove('dark-theme');
-      }
-    }
-  }, [isDarkMode]);
 
   return (
     <NotificationProvider>
@@ -67,6 +58,7 @@ function App() {
                 <Route path="/add-technology" element={<AddTechnology />} />
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/settings" element={<Settings isDarkMode={isDarkMode} onToggleTheme={toggleTheme} />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </main>
           </div>
